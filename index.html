@@ -3,110 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hooper Flow | Performance Hub</title>
+    <title>HOOPER FLOW | ELITE PERFORMANCE</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; }
+        :root { --orange: #ff6b00; --dark-bg: #080808; --card-bg: #121212; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--dark-bg); color: white; overflow-x: hidden; }
         .font-sport { font-family: 'Orbitron', sans-serif; }
-        .card-dark { background: #111; border: 1px solid #222; border-radius: 12px; }
-        .accent-glow { text-shadow: 0 0 10px rgba(255, 107, 0, 0.5); }
-        .btn-active { background: #ff6b00; color: black; font-weight: 900; }
+        
+        /* Glassmorphism & Neon */
+        .glass { background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,107,0,0.1); }
+        .neon-border { border: 1px solid var(--orange); box-shadow: 0 0 15px rgba(255, 107, 0, 0.2); }
+        .orange-gradient { background: linear-gradient(135deg, #ff6b00 0%, #ff3d00 100%); }
+        
+        /* Chat Styling */
+        .chat-container::-webkit-scrollbar { width: 4px; }
+        .chat-container::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 10px; }
+        .bubble-coach { background: #1a1a1a; border-left: 4px solid var(--orange); border-radius: 0 12px 12px 12px; }
+        .bubble-user { background: var(--orange); color: black; font-weight: 600; border-radius: 12px 12px 0 12px; align-self: flex-end; }
     </style>
 </head>
-<body class="pb-10">
+<body class="min-h-screen flex flex-col">
 
-    <header class="p-6 border-b border-zinc-800 flex justify-between items-center bg-black sticky top-0 z-50">
-        <h1 class="font-sport text-xl tracking-widest accent-glow">HOOPER<span class="text-orange-500">FLOW</span></h1>
-        <div id="timer-display" class="font-sport text-orange-500 text-xl">25:00</div>
-    </header>
+    <nav class="p-5 border-b border-zinc-800 flex justify-between items-center glass sticky top-0 z-50">
+        <div>
+            <h1 class="font-sport text-2xl font-900 tracking-tighter italic">HOOPER<span class="text-orange-500 italic">FLOW</span></h1>
+            <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.2em]">Elite Academy System v2.0</p>
+        </div>
+        <div class="flex flex-col items-end">
+            <div id="timer-display" class="font-sport text-2xl text-orange-500 tabular-nums">25:00</div>
+            <div id="timer-status" class="text-[9px] uppercase text-zinc-400 tracking-widest">System Ready</div>
+        </div>
+    </nav>
 
-    <main class="max-w-md mx-auto p-4 space-y-6">
+    <main class="flex-1 max-w-5xl mx-auto w-full p-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <section class="card-dark p-5 text-center border-2 border-orange-600/20">
-            <h2 class="text-xs font-bold text-zinc-500 uppercase mb-3">Modo Enfoque</h2>
-            <div class="flex justify-center gap-4 mb-4">
-                <button onclick="startTimer(25)" class="bg-zinc-800 px-4 py-2 rounded-full text-xs hover:bg-orange-600 transition">Estudiar</button>
-                <button onclick="startTimer(5)" class="bg-zinc-800 px-4 py-2 rounded-full text-xs hover:bg-green-600 transition">Break Activo</button>
-                <button onclick="resetTimer()" class="bg-red-900/30 px-4 py-2 rounded-full text-xs">Reset</button>
+        <div class="space-y-4 order-2 lg:order-1">
+            <div class="glass p-6 rounded-2xl neon-border">
+                <h3 class="font-sport text-xs mb-4 text-orange-500 uppercase">Control de Sesión</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="startTimer(25, '🧠 ESTUDIO')" class="orange-gradient p-3 rounded-xl font-bold text-xs transition active:scale-95">MODO ENFOQUE</button>
+                    <button onclick="startTimer(5, '🏀 BREAK')" class="bg-zinc-800 p-3 rounded-xl font-bold text-xs hover:bg-zinc-700 transition">BREAK ACTIVO</button>
+                </div>
+                <button onclick="resetTimer()" class="w-full mt-2 text-[10px] text-zinc-500 hover:text-white uppercase tracking-widest">Resetear Reloj</button>
             </div>
-            <p id="timer-label" class="text-sm italic text-zinc-400">Listo para empezar...</p>
-        </section>
 
-        <section class="card-dark p-5">
-            <h2 class="font-sport text-sm mb-4 text-orange-500 underline">COACH IA</h2>
-            <div id="chat-box" class="h-40 overflow-y-auto text-sm text-zinc-400 mb-4 space-y-2 pr-2">
-                <p>🏀 Coach: ¿Qué toca hoy? Escribe "entreno" para una rutina de tiro o "estudio" para un tip de enfoque.</p>
+            <div class="glass p-6 rounded-2xl">
+                <h3 class="font-sport text-xs mb-4 text-zinc-400 uppercase">Misiones Diarias</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 bg-zinc-900/50 p-3 rounded-lg border border-zinc-800">
+                        <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+                        <span class="text-xs">500 Tiros de media distancia</span>
+                    </div>
+                    <div class="flex items-center gap-3 bg-zinc-900/50 p-3 rounded-lg border border-zinc-800 opacity-50">
+                        <div class="w-2 h-2 rounded-full bg-zinc-600"></div>
+                        <span class="text-xs">2 Bloques de estudio (Completado)</span>
+                    </div>
+                </div>
             </div>
-            <div class="flex gap-2">
-                <input id="user-input" type="text" placeholder="Dime algo..." class="flex-1 bg-zinc-800 border-none rounded-lg p-3 text-sm outline-none">
-                <button id="send-btn" class="bg-orange-600 p-3 rounded-lg font-bold">GO</button>
-            </div>
-        </section>
+        </div>
 
+        <div class="lg:col-span-2 flex flex-col glass rounded-2xl overflow-hidden order-1 lg:order-2 neon-border">
+            <div class="bg-zinc-900/50 p-4 border-b border-zinc-800 flex justify-between items-center">
+                <span class="font-sport text-xs tracking-widest">COACH IA INTERFACE</span>
+                <span class="text-[10px] bg-green-900/30 text-green-400 px-2 py-1 rounded border border-green-800">ONLINE</span>
+            </div>
+            
+            <div id="chat-box" class="chat-container flex-1 p-6 overflow-y-auto h-[400px] flex flex-col gap-4">
+                <div class="bubble-coach p-4 max-w-[85%] text-sm leading-relaxed">
+                    Saludos, Hooper. Estoy monitorizando tu rendimiento. ¿Quieres optimizar tu mecánica de tiro o necesitas un sistema de memorización para tus exámenes? Escríbeme abajo.
+                </div>
+            </div>
+
+            <div class="p-4 bg-zinc-900/30 border-t border-zinc-800">
+                <div class="flex gap-3 bg-black rounded-xl p-2 border border-zinc-700 focus-within:border-orange-500 transition">
+                    <input id="user-input" type="text" placeholder="Escribe tu consulta al Coach..." class="flex-1 bg-transparent border-none outline-none p-2 text-sm">
+                    <button id="send-btn" class="orange-gradient px-6 py-2 rounded-lg font-black text-xs uppercase tracking-tighter transition hover:brightness-110 active:scale-95">Enviar</button>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script>
-        // LÓGICA DEL TEMPORIZADOR
+        // --- TEMPORIZADOR ELITE ---
         let timeLeft;
         let timerId = null;
 
-        function startTimer(minutes) {
+        function startTimer(minutes, label) {
             clearInterval(timerId);
             timeLeft = minutes * 60;
-            document.getElementById('timer-label').innerText = minutes === 25 ? "Concentración Total 🧠" : "¡Muévete! 🏀";
+            document.getElementById('timer-status').innerText = label;
+            document.getElementById('timer-status').classList.add('text-orange-500');
             
             timerId = setInterval(() => {
                 timeLeft--;
                 updateDisplay();
                 if (timeLeft <= 0) {
                     clearInterval(timerId);
-                    alert(minutes === 25 ? "¡Bloque terminado! Haz 10 flexiones y estira." : "¡Descanso terminado! A estudiar.");
+                    alert("SESIÓN COMPLETADA. REVISA EL CHAT PARA INSTRUCCIONES.");
+                    addCoachMessage("Bloque terminado. Si has estudiado, haz 15 minutos de manejo de balón para resetear el cerebro.");
                 }
             }, 1000);
-        }
-
-        function resetTimer() {
-            clearInterval(timerId);
-            timeLeft = 25 * 60;
-            updateDisplay();
-            document.getElementById('timer-label').innerText = "Listo para empezar...";
         }
 
         function updateDisplay() {
             const m = Math.floor(timeLeft / 60);
             const s = timeLeft % 60;
-            document.getElementById('timer-display').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         }
 
-        // LÓGICA DEL COACH
+        function resetTimer() {
+            clearInterval(timerId);
+            document.getElementById('timer-display').innerText = "25:00";
+            document.getElementById('timer-status').innerText = "System Ready";
+            document.getElementById('timer-status').classList.remove('text-orange-500');
+        }
+
+        // --- CHAT IA MAXEADO ---
         const chatBox = document.getElementById('chat-box');
         const userInput = document.getElementById('user-input');
-        
-        const coachLogic = {
-            "estudio": "Usa la técnica Pomodoro: Estudia 25 min sin celular. En el break, haz círculos con los tobillos.",
-            "entreno": "Hoy: 50 bandejas (25 por mano) + 100 tiros libres. No te vayas hasta meter 5 seguidos.",
-            "estirar": "Haz el 'Couch Stretch' para abrir la cadera. Estar sentado estudiando te quita salto vertical.",
-            "hola": "¡Hola Hooper! ¿Listo para grindear hoy?"
+
+        function addCoachMessage(text) {
+            const div = document.createElement('div');
+            div.className = "bubble-coach p-4 max-w-[85%] text-sm leading-relaxed";
+            div.innerText = text;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function addUserMessage(text) {
+            const div = document.createElement('div');
+            div.className = "bubble-user p-4 max-w-[85%] text-sm";
+            div.innerText = text;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        const brain = {
+            tiro: "ANÁLISIS DE TIRO: Asegúrate de que tu codo esté alineado con el aro. El poder viene de las piernas, no de los brazos. Practica 50 'form shooting' a un metro del aro antes de alejarte.",
+            manejo: "DRIBBLE PROTOCOL: Mantén los ojos arriba, nunca mires el balón. Practica cambios entre piernas cruzando un cono imaginario. 10 minutos intensos valen más que una hora relajado.",
+            estudio: "OPTIMIZACIÓN COGNITIVA: Tu cerebro rinde mejor en bloques de 25-50 min. Usa mapas mentales. Si el tema es difícil, enséñale el concepto a alguien (técnica Feynman).",
+            fatiga: "RECUPERACIÓN: Si sientes las piernas pesadas, prioriza estiramientos dinámicos y descanso. El sobreentrenamiento mata el progreso vertical.",
+            mental: "MINDSET: El baloncesto es 90% mental. Si fallas un tiro, olvídalo. El siguiente es el que importa. 'Next Play Mentality'."
         };
 
         document.getElementById('send-btn').onclick = () => {
             const text = userInput.value.toLowerCase();
-            if(text == "") return;
-            
-            chatBox.innerHTML += `<p class='text-orange-500'>➤ Tú: ${text}</p>`;
-            
-            setTimeout(() => {
-                let respuesta = "No te entiendo, pero recuerda: El trabajo duro gana al talento cuando el talento no trabaja duro.";
-                for (let key in coachLogic) {
-                    if (text.includes(key)) respuesta = coachLogic[key];
-                }
-                chatBox.innerHTML += `<p class='text-zinc-300'>🏀 Coach: ${respuesta}</p>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 500);
-            
+            if(!text) return;
+
+            addUserMessage(userInput.value);
             userInput.value = "";
+
+            setTimeout(() => {
+                let r = "Información recibida. Para darte un plan exacto, dime si quieres trabajar 'tiro', 'manejo', 'estudio' o 'mental'. El camino al éxito no tiene atajos.";
+                if(text.includes("tiro") || text.includes("lanzar")) r = brain.tiro;
+                else if(text.includes("manejo") || text.includes("bote") || text.includes("balon")) r = brain.manejo;
+                else if(text.includes("estudio") || text.includes("examen") || text.includes("aprender")) r = brain.estudio;
+                else if(text.includes("cansado") || text.includes("duele")) r = brain.fatiga;
+                else if(text.includes("mente") || text.includes("psicologia")) r = brain.mental;
+                
+                addCoachMessage(r);
+            }, 600);
         };
+
+        // Enviar con Enter
+        userInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") document.getElementById('send-btn').click();
+        });
     </script>
 </body>
 </html>
