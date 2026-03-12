@@ -9,117 +9,104 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; }
         .font-sport { font-family: 'Orbitron', sans-serif; }
-        .card-dark { background: #111; border: 1px solid #222; border-radius: 12px; transition: 0.3s; }
-        .card-dark:hover { border-color: #ff6b00; }
+        .card-dark { background: #111; border: 1px solid #222; border-radius: 12px; }
         .accent-glow { text-shadow: 0 0 10px rgba(255, 107, 0, 0.5); }
-        .progress-bar { height: 8px; background: #222; border-radius: 4px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #ff6b00; width: 40%; transition: width 0.5s; }
+        .btn-active { background: #ff6b00; color: black; font-weight: 900; }
     </style>
 </head>
-<body class="pb-20">
+<body class="pb-10">
 
-    <header class="p-6 border-b border-zinc-800 flex justify-between items-center bg-black/80 backdrop-blur-md sticky top-0 z-50">
+    <header class="p-6 border-b border-zinc-800 flex justify-between items-center bg-black sticky top-0 z-50">
         <h1 class="font-sport text-xl tracking-widest accent-glow">HOOPER<span class="text-orange-500">FLOW</span></h1>
-        <div class="flex items-center gap-2">
-            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            <span class="text-[10px] text-zinc-400 uppercase tracking-tighter font-bold">IA Live Connection</span>
-        </div>
+        <div id="timer-display" class="font-sport text-orange-500 text-xl">25:00</div>
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-6">
         
-        <section class="card-dark p-5">
-            <h2 class="text-xs font-bold text-zinc-500 uppercase mb-4 tracking-widest">Nivel de Progresión</h2>
-            <div class="space-y-4">
-                <div>
-                    <div class="flex justify-between text-xs mb-1">
-                        <span>DOMINIO DEL BALÓN</span>
-                        <span class="text-orange-500">40%</span>
-                    </div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 40%"></div></div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-xs mb-1">
-                        <span>ENFOQUE DE ESTUDIO</span>
-                        <span class="text-orange-500">65%</span>
-                    </div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 65%"></div></div>
-                </div>
+        <section class="card-dark p-5 text-center border-2 border-orange-600/20">
+            <h2 class="text-xs font-bold text-zinc-500 uppercase mb-3">Modo Enfoque</h2>
+            <div class="flex justify-center gap-4 mb-4">
+                <button onclick="startTimer(25)" class="bg-zinc-800 px-4 py-2 rounded-full text-xs hover:bg-orange-600 transition">Estudiar</button>
+                <button onclick="startTimer(5)" class="bg-zinc-800 px-4 py-2 rounded-full text-xs hover:bg-green-600 transition">Break Activo</button>
+                <button onclick="resetTimer()" class="bg-red-900/30 px-4 py-2 rounded-full text-xs">Reset</button>
             </div>
+            <p id="timer-label" class="text-sm italic text-zinc-400">Listo para empezar...</p>
         </section>
 
-        <section class="card-dark p-5 bg-gradient-to-br from-zinc-900 to-black">
-            <h2 class="font-sport text-sm mb-4 text-orange-500">COACH IA PERSONAL</h2>
-            <div id="chat-box" class="h-32 overflow-y-auto text-sm text-zinc-400 mb-4 italic space-y-2">
-                <p>Hola Hooper. Hoy es un buen día para mejorar. ¿Qué estamos trabajando hoy? ¿Cancha o Libros?</p>
+        <section class="card-dark p-5">
+            <h2 class="font-sport text-sm mb-4 text-orange-500 underline">COACH IA</h2>
+            <div id="chat-box" class="h-40 overflow-y-auto text-sm text-zinc-400 mb-4 space-y-2 pr-2">
+                <p>🏀 Coach: ¿Qué toca hoy? Escribe "entreno" para una rutina de tiro o "estudio" para un tip de enfoque.</p>
             </div>
             <div class="flex gap-2">
-                <input id="user-input" type="text" placeholder="Dime tu fatiga o duda..." class="flex-1 bg-zinc-800 border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-orange-500 outline-none">
-                <button id="send-btn" class="bg-orange-600 hover:bg-orange-500 p-3 rounded-lg font-bold transition-all">
-                    GO
-                </button>
+                <input id="user-input" type="text" placeholder="Dime algo..." class="flex-1 bg-zinc-800 border-none rounded-lg p-3 text-sm outline-none">
+                <button id="send-btn" class="bg-orange-600 p-3 rounded-lg font-bold">GO</button>
             </div>
         </section>
-
-        <div class="grid grid-cols-2 gap-3">
-            <div class="card-dark p-4 text-center cursor-pointer hover:bg-zinc-900" onclick="getTip('estudio')">
-                <span class="text-2xl">📚</span>
-                <p class="text-[10px] mt-2 font-bold uppercase">Tip Estudio</p>
-            </div>
-            <div class="card-dark p-4 text-center cursor-pointer hover:bg-zinc-900" onclick="getTip('entreno')">
-                <span class="text-2xl">🏀</span>
-                <p class="text-[10px] mt-2 font-bold uppercase">Tip Entreno</p>
-            </div>
-        </div>
 
     </main>
 
     <script>
+        // LÓGICA DEL TEMPORIZADOR
+        let timeLeft;
+        let timerId = null;
+
+        function startTimer(minutes) {
+            clearInterval(timerId);
+            timeLeft = minutes * 60;
+            document.getElementById('timer-label').innerText = minutes === 25 ? "Concentración Total 🧠" : "¡Muévete! 🏀";
+            
+            timerId = setInterval(() => {
+                timeLeft--;
+                updateDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    alert(minutes === 25 ? "¡Bloque terminado! Haz 10 flexiones y estira." : "¡Descanso terminado! A estudiar.");
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerId);
+            timeLeft = 25 * 60;
+            updateDisplay();
+            document.getElementById('timer-label').innerText = "Listo para empezar...";
+        }
+
+        function updateDisplay() {
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            document.getElementById('timer-display').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        // LÓGICA DEL COACH
         const chatBox = document.getElementById('chat-box');
         const userInput = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
-
-        const knowledge = {
-            estudio: [
-                "Técnica Pomodoro: Estudia 50 min, pero en el descanso de 10 min haz 'Wall Sits' para fortalecer piernas.",
-                "Usa el Active Recall: Cierra el libro y explica en voz alta la lección como si fueras un comentarista de la NBA.",
-                "El cerebro consume mucha glucosa. Hidrátate igual que en un partido."
-            ],
-            entreno: [
-                "¿Has estudiado mucho? Tus tobillos están rígidos. Haz 20 círculos con cada uno antes de tirar.",
-                "Progresión: No tires triples hasta haber metido 20 bandejas y 20 tiros de media distancia. Mecánica primero.",
-                "Estiramiento clave: Couch Stretch. Siéntate en el suelo, apoya una rodilla y estira el psoas. Evita lesiones."
-            ]
+        
+        const coachLogic = {
+            "estudio": "Usa la técnica Pomodoro: Estudia 25 min sin celular. En el break, haz círculos con los tobillos.",
+            "entreno": "Hoy: 50 bandejas (25 por mano) + 100 tiros libres. No te vayas hasta meter 5 seguidos.",
+            "estirar": "Haz el 'Couch Stretch' para abrir la cadera. Estar sentado estudiando te quita salto vertical.",
+            "hola": "¡Hola Hooper! ¿Listo para grindear hoy?"
         };
 
-        function addMessage(msg, isUser = false) {
-            const p = document.createElement('p');
-            p.className = isUser ? "text-orange-400 font-bold" : "text-zinc-300";
-            p.innerText = isUser ? "➤ Tu: " + msg : "🏀 Coach: " + msg;
-            chatBox.appendChild(p);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function getTip(type) {
-            const tips = knowledge[type];
-            const randomTip = tips[Math.floor(Math.random() * tips.length)];
-            addMessage(randomTip);
-        }
-
-        sendBtn.addEventListener('click', () => {
-            if(userInput.value.trim() !== "") {
-                const text = userInput.value.toLowerCase();
-                addMessage(userInput.value, true);
-                
-                setTimeout(() => {
-                    if(text.includes("estudio") || text.includes("leer")) getTip('estudio');
-                    else if(text.includes("entreno") || text.includes("balon") || text.includes("tiro")) getTip('entreno');
-                    else addMessage("Entendido. Mantén el enfoque. ¿Quieres un tip de 'estudio' o de 'entreno'?");
-                }, 600);
-                
-                userInput.value = "";
-            }
-        });
+        document.getElementById('send-btn').onclick = () => {
+            const text = userInput.value.toLowerCase();
+            if(text == "") return;
+            
+            chatBox.innerHTML += `<p class='text-orange-500'>➤ Tú: ${text}</p>`;
+            
+            setTimeout(() => {
+                let respuesta = "No te entiendo, pero recuerda: El trabajo duro gana al talento cuando el talento no trabaja duro.";
+                for (let key in coachLogic) {
+                    if (text.includes(key)) respuesta = coachLogic[key];
+                }
+                chatBox.innerHTML += `<p class='text-zinc-300'>🏀 Coach: ${respuesta}</p>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 500);
+            
+            userInput.value = "";
+        };
     </script>
 </body>
 </html>
